@@ -12,12 +12,8 @@ app.get('/', async(req, res)=>{
     res.send(json);
 });
 
-
-
-
 app.listen('8080');
 console.log('API is running on http://localhost:8080');module.exports = app;
-
 
 const scrapeTeams = async(res) =>{
     const browser = await puppeteer.launch({headless: "new"});
@@ -65,3 +61,6 @@ const scrapeTeams = async(res) =>{
     return grabTable;
 
 }
+
+
+module.exports = app;
