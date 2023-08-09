@@ -5,11 +5,18 @@ const app = express();
 const puppeteer = require("puppeteer");
 
 app.get('/', async(req, res)=>{
-    const teams = await scrapeTeams();
-    const json = {
-        teams: teams
+    try{
+        const teams = await scrapeTeams();
+        const json = {
+            teams: teams
+        }
+        res.send(json);
     }
-    res.send(json);
+    catch(error){
+        console.log(error)
+        res.status(500).json({ error: error.message });
+    }
+
 });
 
 app.listen('8080');
