@@ -13,7 +13,7 @@ app.get('/', async(req, res)=>{
 });
 
 app.listen('8080');
-console.log('API is running on http://localhost:8080');module.exports = app;
+console.log('API is running on http://localhost:8080');
 
 const scrapeTeams = async(res) =>{
     const browser = await puppeteer.launch({headless: "new"});
@@ -61,6 +61,4 @@ const scrapeTeams = async(res) =>{
     return grabTable;
 
 }
-
-
 module.exports = app;
