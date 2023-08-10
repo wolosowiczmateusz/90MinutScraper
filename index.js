@@ -4,17 +4,19 @@ const cheerio = require('cheerio');
 const app = express();
 const axios = require("axios");
 const iconv = require('iconv-lite');
+const fs = require('fs');
 
-app.get('/', async(req, res)=>{
-        const teams = await scrapeData(18);
+app.get('/:league', async(req, res)=>{
+        const teams = await scrapeData(converter(req.params.league));
         const json = {
             teams: teams
         }
         res.send(json);
 });
 
-app.get('/meczyki', async(req, res)=>{
-    const teams = await scrapeDataMeczyki(18);
+app.get('/meczyki/:league', async(req, res)=>{
+
+    const teams = await scrapeDataMeczyki(converter(req.params.league));
     const json = {
         teams: teams
     }
@@ -24,10 +26,10 @@ app.get('/meczyki', async(req, res)=>{
 app.listen('8080');
 console.log('API is running on http://localhost:8080');
 
-async function scrapeData(numOfTeams) {
+async function scrapeData(params) {
       const response = await axios({
         method: 'get',
-        url: 'http://www.90minut.pl/liga/1/liga12496.html',
+        url: params.url,
         responseType: 'arraybuffer'
       });
       const data = iconv.decode(response.data, 'iso-8859-2');
@@ -36,7 +38,7 @@ async function scrapeData(numOfTeams) {
       let teamsTable = $(".main2 tbody tr td");
       //usuwanie drugiej niepotrzebnej tabeli i napisów nad tabelą
       teamsTable.splice(0,29)
-      teamsTable.splice(numOfTeams*22)
+      teamsTable.splice(params.numOfTeams*22)
       let teamsString = [];
       let teams = [];
       teamsTable.each((idx, el)=>{
@@ -72,10 +74,10 @@ async function scrapeData(numOfTeams) {
       return teams;
 }
 
-async function scrapeDataMeczyki(numOfTeams) {
+async function scrapeDataMeczyki(params) {
     const response = await axios({
       method: 'get',
-      url: 'http://www.90minut.pl/liga/1/liga12496.html',
+      url: params.url,
       responseType: 'arraybuffer'
     });
     const data = iconv.decode(response.data, 'iso-8859-2');
@@ -84,20 +86,23 @@ async function scrapeDataMeczyki(numOfTeams) {
     let teamsTable = $(".main2 tbody tr td");
     //usuwanie drugiej niepotrzebnej tabeli i napisów nad tabelą
     teamsTable.splice(0,29)
-    teamsTable.splice(numOfTeams*22)
+    teamsTable.splice(params.numOfTeams*22)
     let teamsString = [];
     let teams = [];
     teamsTable.each((idx, el)=>{
       teamsString.push($(el).text())
     })
-    for(let i = 0; i<18;i++){
+    console.log(teamsString.length)
+    for(let i = 0; i<params.numOfTeams;i++){
         const goalsScored = teamsString[7].split("-")[0];
         const goalsLost = teamsString[7].split("-")[1]; 
         const teamObject = {
             position: teamsString[0].slice(0,-1),
             name: teamsString[1].slice(1),
             matches: teamsString[2],
-            points: teamsString[3],
+            points: {
+                total: teamsString[3]
+            },
             wins: {
               total: teamsString[4]
             },
@@ -133,4 +138,17 @@ async function scrapeDataMeczyki(numOfTeams) {
     }
     return teams;
 }
+
+const converter = (name) =>{
+    const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+    const info = {}
+        if (name in data) {
+            info.url = data[name].url;
+            info.numOfTeams = data[name].numOfTeams;
+            return info
+        }
+        else{
+            return null
+        }
+    }
 module.exports = app;

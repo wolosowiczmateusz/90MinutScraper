@@ -1,0 +1,50 @@
+{
+    "history":{
+        "IVligapodl22":{
+            "url":"http://www.90minut.pl/liga/1/liga12496.html",
+            "numOfTeams": 18
+        },
+        "IVligapodl21":{
+            "url": "http://www.90minut.pl/liga/1/liga11829.html",
+            "numOfTeams": 16
+        }, 
+        "IVligapodl20": {
+            "url":"http://www.90minut.pl/liga/1/liga11273.html",
+            "numOfTeams": 17
+        },
+
+        "okrepodl22": {
+            "url": "http://www.90minut.pl/liga/1/liga12501.html",
+            "numOfTeams": 16
+        }, 
+        "okrepodl21":{
+            "url":"http://www.90minut.pl/liga/1/liga11844.html",
+            "numOfTeams": 16
+        } ,
+        "okrepodl20":{
+            "url": "http://www.90minut.pl/liga/1/liga11274.html",
+            "numOfTeams": 18
+        },
+
+        "podlA322":{
+            "url":  "http://www.90minut.pl/liga/1/liga12545.html",
+            "numOfTeams": 12
+        }
+
+    },
+    "IVligapodl": {
+        "url": "http://www.90minut.pl/liga/1/liga12974.html",
+        "numOfTeams": 18
+    },
+    "okrepodl": {
+        "url": "http://www.90minut.pl/liga/1/liga12994.html",
+        "numOfTeams": 16
+    },
+    "podlA3":{
+        "url": "http://www.90minut.pl/liga/1/liga13323.html",
+        "numOfTeams": 12
+    } 
+
+}
+
+
