@@ -6,22 +6,35 @@ const axios = require("axios");
 const iconv = require('iconv-lite');
 const { readFileSync } = require('fs');
 const path = require('path');
+const { error } = require('console');
 
 app.get('/:league', async(req, res)=>{
-        const teams = await scrapeData(converter(req.params.league));
+        const data = converter(req.params.league)
+        if(data!=null){
+            const teams = await scrapeData(data);
+            const json = {
+                teams: teams
+            }
+            res.send(json);
+        }    
+        else{
+            res.send("error")
+        }
+});
+
+app.get('/meczyki/:league', async(req, res)=>{
+    const data = converter(req.params.league)
+    if(data!=null){
+        const teams = await scrapeDataMeczyki(data);
         const json = {
             teams: teams
         }
         res.send(json);
-});
-
-app.get('/meczyki/:league', async(req, res)=>{
-
-    const teams = await scrapeDataMeczyki(converter(req.params.league));
-    const json = {
-        teams: teams
     }
-    res.send(json);
+    else{
+        res.send("error")
+    }
+    
 });
 
 app.listen('8080');
@@ -93,10 +106,9 @@ async function scrapeDataMeczyki(params) {
     teamsTable.each((idx, el)=>{
       teamsString.push($(el).text())
     })
-    console.log(teamsString.length)
     for(let i = 0; i<params.numOfTeams;i++){
         const goalsScored = teamsString[7].split("-")[0];
-        const goalsLost = teamsString[7].split("-")[1]; 
+        const goalsLost = teamsString[7].split("-")[1];
         const teamObject = {
             position: teamsString[0].slice(0,-1),
             name: teamsString[1].slice(1),
@@ -143,10 +155,9 @@ async function scrapeDataMeczyki(params) {
 const converter = (name) =>{
     const file = path.join(process.cwd(), '', 'data.json')
     const data = JSON.parse(readFileSync(file, 'utf-8'));
-    const info = {}
-        if (name in data) {
-            info.url = data[name].url;
-            info.numOfTeams = data[name].numOfTeams;
+    const info = data[name] || data.history[name] || null;
+
+        if (info) {
             return info
         }
         else{
