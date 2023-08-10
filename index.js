@@ -4,7 +4,8 @@ const cheerio = require('cheerio');
 const app = express();
 const axios = require("axios");
 const iconv = require('iconv-lite');
-const fs = require('fs');
+const { readFileSync } = require('fs');
+const path = require('path');
 
 app.get('/:league', async(req, res)=>{
         const teams = await scrapeData(converter(req.params.league));
@@ -140,7 +141,8 @@ async function scrapeDataMeczyki(params) {
 }
 
 const converter = (name) =>{
-    const data = JSON.parse(fs.readFileSync('data.json', 'utf8'));
+    const file = path.join(process.cwd(), '', 'data.json')
+    const data = JSON.parse(readFileSync(file, 'utf-8'));
     const info = {}
         if (name in data) {
             info.url = data[name].url;
@@ -151,4 +153,7 @@ const converter = (name) =>{
             return null
         }
     }
+
+
+
 module.exports = app;
