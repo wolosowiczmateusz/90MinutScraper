@@ -22,6 +22,8 @@ app.get('/:league', async(req, res)=>{
         }
 });
 
+app.get('')
+
 app.get('/meczyki/:league', async(req, res)=>{
     const data = converter(req.params.league)
     if(data!=null){
@@ -157,14 +159,13 @@ const converter = (name) =>{
     const data = JSON.parse(readFileSync(file, 'utf-8'));
     const info = data[name] || data.history[name] || null;
 
-        if (info) {
-            return info
-        }
-        else{
-            return null
-        }
+    if (info) {
+        return info
     }
-
+    else{
+        return null
+    }
+}
 
 
 module.exports = app;
